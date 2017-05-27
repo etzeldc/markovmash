@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script
+  src="http://code.jquery.com/jquery-3.2.1.js"
+  integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+  crossorigin="anonymous"></script>
+</head>
+<body>
+    
+    <div id="display" style="height:100px"></div>
+    <p>Type in a Twitter username in the field below to generate a randomized tweet.</p>
+    <div><input type="text" id="user"></div>
+    <div><button id="tweet">Generate Tweet</button></div>
+    <div>
+
+    </div>
+    <p>Type in two Twitter usernames in the fields below to generate a mash up. (NOT YET WORKING)</p>
+    <div><input type="text" id="user1"><input type="text" id="user2"></div>
+    <div><button id="doubleTweet">Generate Mash Up</button></div>
+
+    <script>
+        $('#tweet').click(function() {
+            var user = $('#user').val();
+            if (user) {
+                $.post('/api/tweets/' + user, {
+                    user: $('#user').val()
+                }, function (response) {
+                    $('#display').text(response);
+                });
+            } else {
+                $('#display').text("You must enter a valid Twitter name.")
+            }
+            $.get('/api/tweets/' + user, function(res) {
+                // var findLink = res.split(" ")
+                // for (var i = 0; i < findLink.length; i++) {
+                //     if (/http[\S]+/g) {
+                //         findLink[i] = findLink[i].attr("href",findLink[i]);
+                //     }
+                // }
+                // res = findLink.join(" ");
+                $('#display').text(res);
+            })
+        })
+
+
+        $('#doubleTweet').on('click', function(res) {
+            var user1 = $('#user1').val();
+            var user2 = $('#user2').val();
+            if (user1 && user2) {
+                $.post('/api/tweets/' + user1 + '/' + user2, {
+                    user1: $('#user1').val(),
+                    user2: $('#user2').val()
+                }, function(response) {
+                    $('#display').text(response);
+                });
+            } else {
+                $('#display').text("These names aren\'t valid.")
+                return;
+            }
+            $.get('/api/tweets/' + user1 + '/' + user2, function(res) {
+                $('#display').text(res);
+            })
+        });
+    </script>
+</body>
+</html>
